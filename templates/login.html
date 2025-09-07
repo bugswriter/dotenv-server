@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<header>
+    <h1>Env Manager</h1>
+</header>
+
+<main>
+    <h2>Authentication Required</h2>
+    <p>
+        Accessing Environment: <code>{{ namespace }}</code> / <code>{{ environment }}</code>
+    </p>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <p><strong>Error:</strong> {{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('dashboard', namespace=namespace, environment=environment) }}">
+        <label for="password">Master Password</label>
+        <input type="password" name="password" id="password" required autofocus placeholder="Enter password...">
+        <button type="submit">Unlock</button>
+    </form>
+</main>
+
+<footer>
+    <hr>
+    <small>A minimal .env manager by bugswriter</small>
+</footer>
+{% endblock %}

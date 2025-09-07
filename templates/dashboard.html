@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<header>
+    <nav>
+        <div>
+            <h1>Dashboard</h1>
+            <p style="margin-top: -1rem; color: #555;">
+                Managing: <code>{{ namespace }}</code> / <code>{{ environment }}</code>
+            </p>
+        </div>
+        <a href="{{ url_for('logout', namespace=namespace, environment=environment) }}" role="button">Lock</a>
+    </nav>
+</header>
+
+<main>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <p>✅ {{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <h3>Environment Variables</h3>
+    {% if variables %}
+    <table>
+        <thead>
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+                <th style="text-align: right;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for key, value in variables.items() %}
+            <tr>
+                <td><code>{{ key }}</code></td>
+                <td>{{ value }}</td>
+                <td style="text-align: right;">
+                    <form method="POST" action="{{ url_for('delete_variable', namespace=namespace, environment=environment) }}" onsubmit="return confirm('Are you sure you want to delete this variable?');">
+                        <input type="hidden" name="key_to_delete" value="{{ key }}">
+                        <button type="submit" class="outline">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p><em>No variables found. Add one below!</em></p>
+    {% endif %}
+    
+    <hr>
+    
+    <h3>Add New Variable</h3>
+    <form method="POST" action="{{ url_for('add_variable', namespace=namespace, environment=environment) }}">
+        <label for="key">Key</label>
+        <input type="text" name="key" id="key" required placeholder="DATABASE_URL">
+        
+        <label for="value">Value</label>
+        <input type="text" name="value" id="value" required placeholder="postgres://user:pass@host/db">
+        
+        <button type="submit">Add Variable</button>
+    </form>
+</main>
+
+<footer>
+    <hr>
+    <small>A minimal .env manager by bugswriter</small>
+</footer>
+{% endblock %}
