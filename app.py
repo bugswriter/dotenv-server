@@ -114,4 +114,4 @@ def api_get_env(namespace, environment):
     return jsonify(variables)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8070)
+    app.run(debug=False, port=8070)
